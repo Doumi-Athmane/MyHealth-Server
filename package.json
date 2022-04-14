@@ -1,0 +1,19 @@
+{
+    "name": "MyHealth_server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app/app.js",
+    "type": "module",
+    "scripts": {
+        "start": "nodemon app/app.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.3"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.15"
+    }
+}
