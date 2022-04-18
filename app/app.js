@@ -5,7 +5,11 @@ import db from './models/index.js';
 import usersRoutes from './routes/users.js';
 import hopitalRoutes from './routes/hopital.route.js';
 import specialiteRoutes from './routes/specialite.route.js';
-
+import medecinRoutes from './routes/medecin.route.js';
+import patientRoutes from './routes/patient.route.js';
+import adminRoutes from './routes/administrateur.route.js'
+import procheRoutes from './routes/prochePatient.route.js'
+import conseilRoutes from './routes/conseil.route.js'
 
 const app = express();
 
@@ -17,9 +21,19 @@ db.sequelize.sync();
 
 app.use(bodyParser.json());
 
-app.use('/users', usersRoutes);
-app.use('/hopitals', hopitalRoutes);
-app.use('/specialites', specialiteRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/hopitals', hopitalRoutes);
+app.use('/api/specialites', specialiteRoutes);
+app.use('/api/medecins', medecinRoutes);
+app.use('/api/patients', patientRoutes);
+app.use('/api/admins', adminRoutes);
+app.use('/api/prochePatient', procheRoutes);
+app.use('/api/conseils', conseilRoutes);
+
+
+
+
+
 
 
 

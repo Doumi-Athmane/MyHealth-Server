@@ -1,6 +1,6 @@
-module.exports = function(sequelize, Sequelize) {
+export default function(sequelize, Sequelize) {
 
-    const Patient = sequelize.define("patient", {
+    const Admin = sequelize.define("administrateur", {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
@@ -24,24 +24,20 @@ module.exports = function(sequelize, Sequelize) {
         mot_de_passe: {
             type: Sequelize.STRING(255)
         },
-        id_medecin: {
-            type: Sequelize.INTEGER
-        },
         idhopital: {
-            type: Sequelize.INTEGER
+            type: Sequelize.INTEGER,
         },
 
     }, {
         freezeTableName: true,
-        tableName: 'patient',
+        tableName: 'administrateur',
         createdAt: false,
         updatedAt: false
     });
-    Reservation.associate = function(models) {
-        Reservation.belongsTo(models.locataire, {
-            foreignKey: 'idLocataire',
-
+    Admin.associate = function(models) {
+        Admin.belongsTo(models.hopital, {
+            foreignKey: 'idhopital',
         });
     };
-    return Patient
+    return Admin
 };

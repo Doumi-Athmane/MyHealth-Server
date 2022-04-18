@@ -12,7 +12,7 @@ export default function(sequelize, Sequelize) {
 
     }, {
         freezeTableName: true,
-        tableName: 'cpecialite',
+        tableName: 'specialite',
         createdAt: false,
         updatedAt: false
     });

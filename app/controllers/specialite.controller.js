@@ -1,10 +1,10 @@
 import db from '../models/index.js'
-const specialite = db.specialite;
+const Specialite = db.specialite;
 
 // Find all specialites
 const getAllSpecialites = async(req, res) => {
         try {
-            const specialites = await specialite.findAll();
+            const specialites = await Specialite.findAll();
             res.status(200).send(specialites);
         } catch (err) {
             res.status(404).send({
@@ -23,7 +23,7 @@ const getSpecialiteByID = async(req, res) => {
     try {
         const specialite = await Specialite.findAll({
             where: {
-                idhopital: req.params.id,
+                idspecialite: req.params.id,
             },
         });
         res.status(200).send(specialite);
@@ -43,7 +43,7 @@ const creatSpecialite = async(req, res) => {
         return;
     }
     try {
-        const data = await Specialite.create(req.body.nomspecialite);
+        const data = await Specialite.create({ nomspecialite: req.body.nomspecialite });
         res.status(200).send({ id: data.idspecialite });
     } catch (err) {
         res.status(404).send({
@@ -62,14 +62,12 @@ const updateSpecialite = async(req, res) => {
     }
 
     try {
-        const updatespecialite = Specialite.update(
-            req.body.nomspecialite, {
-                where: {
-                    idspecialite: req.body.id,
-                }
+        const updatespecialite = Specialite.update({ nomspecialite: req.body.nomspecialite }, {
+            where: {
+                idspecialite: req.params.id,
             }
-        )
-        res.status(200).send({ id: updatehopital.idspecialite });
+        })
+        res.status(200).send(true);
     } catch (err) {
         res.status(404).send({
             error: err.message
@@ -86,12 +84,12 @@ const deleteSpecialite = async(req, res) => {
         return;
     }
     try {
-        const specialite = await Specialite.delete({
+        const specialite = await Specialite.destroy({
             where: {
                 idspecialite: req.params.id,
             },
         });
-        res.status(200).send(specialite);
+        res.status(200).json(specialite);
     } catch (err) {
         res.status(404).send({
             error: err.message

@@ -8,9 +8,4 @@ router.post('/add', hopital.creatHospital)
 router.put('/update/:id', hopital.updateHopital)
 router.delete('/:id', hopital.deleteHopital)
 
-
-
-
-
-
 export default router;

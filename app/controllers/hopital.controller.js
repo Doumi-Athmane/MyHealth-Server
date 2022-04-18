@@ -76,11 +76,11 @@ const updateHopital = async(req, res) => {
         const updatehopital = Hopital.update(
             hopital, {
                 where: {
-                    idhopital: req.body.id,
+                    idhopital: req.params.id,
                 }
             }
         )
-        res.status(200).send({ id: updatehopital.idhopital });
+        res.status(200).send(true);
     } catch (err) {
         res.status(404).send({
             error: err.message
@@ -97,12 +97,12 @@ const deleteHopital = async(req, res) => {
         return;
     }
     try {
-        const hopital = await Hopital.delete({
+        const hopital = await Hopital.destroy({
             where: {
                 idhopital: req.params.id,
             },
         });
-        res.status(200).send(hopital);
+        res.status(200).json(hopital);
     } catch (err) {
         res.status(404).send({
             error: err.message
