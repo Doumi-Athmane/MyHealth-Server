@@ -7,6 +7,9 @@ import patient from '../models/patient.model.mjs'
 import admin from '../models/administrateur.model.mjs';
 import prochePatient from '../models/prochePatient.model.mjs'
 import conseil from '../models/conseil.model.mjs'
+import frequanceCardiaque from '../models/frequanceCardiaque.model.mjs'
+import tensionArterielle from '../models/tensionArterielle.model.mjs'
+import alerte from '../models/alerte.model.mjs'
 
 
 
@@ -44,6 +47,9 @@ db.patient = patient(sequelize, Sequelize);
 db.admin = admin(sequelize, Sequelize);
 db.prochePatient = prochePatient(sequelize, Sequelize)
 db.conseil = conseil(sequelize, Sequelize)
+db.frequanceCardiaque = frequanceCardiaque(sequelize, Sequelize)
+db.tensionArterielle = tensionArterielle(sequelize, Sequelize)
+db.alerte = alerte(sequelize, Sequelize)
 
 
 export default db;

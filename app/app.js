@@ -10,6 +10,9 @@ import patientRoutes from './routes/patient.route.js';
 import adminRoutes from './routes/administrateur.route.js'
 import procheRoutes from './routes/prochePatient.route.js'
 import conseilRoutes from './routes/conseil.route.js'
+import frequenceCardiaqueRoutes from './routes/frequanceCardiaque.route.js'
+import tensionArterielleRoutes from './routes/tensionArterielle.route.js'
+import alerteRoutes from './routes/alerte.route.js'
 
 const app = express();
 
@@ -29,6 +32,13 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/prochePatient', procheRoutes);
 app.use('/api/conseils', conseilRoutes);
+app.use('/api/frequanceCardique', frequenceCardiaqueRoutes);
+app.use('/api/tensonArterielle', tensionArterielleRoutes);
+app.use('/api/alerte', alerteRoutes);
+
+
+
+
 
 
 
