@@ -13,6 +13,10 @@ import conseilRoutes from './routes/conseil.route.js'
 import frequenceCardiaqueRoutes from './routes/frequanceCardiaque.route.js'
 import tensionArterielleRoutes from './routes/tensionArterielle.route.js'
 import alerteRoutes from './routes/alerte.route.js'
+import hopitalHasSpecialiteRoutes from "./routes/hopitalHasSpecialite.route.js";
+import frequanceMakeAlerteRoutes from "./routes/frequanceMakeAlerte.route.js"
+import tensionMakeAlerteRoutes from "./routes/tensionArterielle.route.js"
+import alertForProcheRoutes from "./routes/alerteForProche.route.js"
 
 const app = express();
 
@@ -35,6 +39,11 @@ app.use('/api/conseils', conseilRoutes);
 app.use('/api/frequanceCardique', frequenceCardiaqueRoutes);
 app.use('/api/tensonArterielle', tensionArterielleRoutes);
 app.use('/api/alerte', alerteRoutes);
+app.use('/api/hopitalHasSpecialite', hopitalHasSpecialiteRoutes)
+app.use('/api/frequanceMakeAlerte', frequanceMakeAlerteRoutes);
+app.use('/api/tensionMakeAlerte', tensionMakeAlerteRoutes);
+app.use('/api/alertForProche', alertForProcheRoutes);
+
 
 
 

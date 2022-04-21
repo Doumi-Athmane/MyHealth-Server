@@ -10,6 +10,10 @@ import conseil from '../models/conseil.model.mjs'
 import frequanceCardiaque from '../models/frequanceCardiaque.model.mjs'
 import tensionArterielle from '../models/tensionArterielle.model.mjs'
 import alerte from '../models/alerte.model.mjs'
+import hopitalHasSpecialite from './hopitalHasSpecialite.model.mjs';
+import frequanceMakeAlerte from './frequanceMakeAlerte.model.mjs';
+import tensionMakeAlerte from './tensionMakeAlerte.model.mjs';
+import alerteForProche from './alerteForProche.model.mjs';
 
 
 
@@ -50,6 +54,10 @@ db.conseil = conseil(sequelize, Sequelize)
 db.frequanceCardiaque = frequanceCardiaque(sequelize, Sequelize)
 db.tensionArterielle = tensionArterielle(sequelize, Sequelize)
 db.alerte = alerte(sequelize, Sequelize)
+db.hopitalHasSpecialite = hopitalHasSpecialite(sequelize, Sequelize)
+db.frequanceMakeAlerte = frequanceMakeAlerte(sequelize, Sequelize)
+db.tensionMakeAlerte = tensionMakeAlerte(sequelize, Sequelize)
+db.alerteForProche = alerteForProche(sequelize, Sequelize)
 
 
 export default db;
