@@ -1,5 +1,6 @@
 import db from '../models/index.js'
 const Medecin = db.medecin;
+import bcrypt from 'bcrypt'
 
 // Find all medecins
 const getAllMedecins = async(req, res) => {
@@ -54,6 +55,10 @@ const creatMedecin = async(req, res) => {
         idspecialite: req.body.idspecialite,
         idhopital: req.body.idhopital,
     };
+    //hasher le mot de passe
+    var salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(medecin.mot_de_passe, salt);
+    medecin.mot_de_passe = hash;
     try {
         const data = await Medecin.create(medecin);
         res.status(200).send({ id: data.id });
@@ -120,10 +125,39 @@ const deleteMedecin = async(req, res) => {
     }
 }
 
+const loginMedecin = async(req, res) => {
+    const { email, motDePasse } = req.body;
+
+    if (!email || !motDePasse) {
+        res.status(400).send({ success: false, error: "Please provide and email and password" })
+    }
+    // check for admin
+    else {
+        const medecin = await Medecin.findOne({ where: { email: email } })
+        if (!medecin) {
+            res.status(401).send({ success: false, error: "Invalid credentials" })
+        } else {
+
+            const motdepasseCorrect = await bcrypt.compare(motDePasse, medecin.mot_de_passe);
+
+            if (!motdepasseCorrect) {
+                res.status(401).send({ success: false, error: "Invalid credentials" })
+
+            } else {
+                //const token = jwt.sign({ id: locataire.idLocataire, role: "locataire" }, process.env.JWT_SECRET);
+                res.send({ success: true, id: medecin.id }); //, token: token });
+                //console.log("locataires connection established!")
+
+            }
+        }
+    }
+}
+
 export default {
     getAllMedecins,
     getMedecinByID,
     creatMedecin,
     updateMedecin,
-    deleteMedecin
+    deleteMedecin,
+    loginMedecin
 }

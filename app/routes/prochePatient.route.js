@@ -7,5 +7,7 @@ router.get('/:id', prochePatient.getProchePatientByID)
 router.post('/add', prochePatient.creatProchePatient)
 router.put('/update/:id', prochePatient.updateProchePatient)
 router.delete('/:id', prochePatient.deleteProchePatient)
+router.post('/login', prochePatient.loginProche)
+
 
 export default router;

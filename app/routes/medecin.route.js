@@ -7,5 +7,7 @@ router.get('/:id', medecin.getMedecinByID)
 router.post('/add', medecin.creatMedecin)
 router.put('/update/:id', medecin.updateMedecin)
 router.delete('/:id', medecin.deleteMedecin)
+router.post('/login', medecin.loginMedecin)
+
 
 export default router;
