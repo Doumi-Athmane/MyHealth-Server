@@ -23,7 +23,7 @@ const getPatientByID = async(req, res) => {
         return;
     }
     try {
-        const patient = await Patient.findAll({
+        const patient = await Patient.findOne({
             where: {
                 id: req.params.id,
             },
@@ -52,6 +52,8 @@ const creatPatient = async(req, res) => {
         adresse: req.body.adresse,
         email: req.body.email,
         mot_de_passe: req.body.motDePasse,
+        age: req.body.age,
+        sexe: req.body.sexe,
         id_medecin: req.body.id_medecin,
         idhopital: req.body.idhopital,
     };
@@ -71,7 +73,7 @@ const creatPatient = async(req, res) => {
 
 //Update patient infos
 const updatePatient = async(req, res) => {
-    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.adresse || !req.body.email || !req.body.motDePasse) {
+    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.adresse || !req.body.age || !req.body.id_medecin) {
         res.status(400).send({
             message: "parameters can't be empty!"
         })
@@ -80,12 +82,14 @@ const updatePatient = async(req, res) => {
     const patient = {
         nom: req.body.nom,
         prenom: req.body.prenom,
-        numero_de_telephone: req.body.numeroDeTelephone,
+        numeroDeTelephone: req.body.numeroDeTelephone,
         adresse: req.body.adresse,
-        email: req.body.email,
-        mot_de_passe: req.body.motDePasse,
+        //email: req.body.email,
+        //mot_de_passe: req.body.motDePasse,
+        age: req.body.age,
+        sexe: req.body.sexe,
         id_medecin: req.body.id_medecin,
-        idhopital: req.body.idhopital,
+        //idhopital: req.body.idhopital,
     };
     try {
         const updatemedein = await Patient.update(
@@ -97,9 +101,7 @@ const updatePatient = async(req, res) => {
         )
         res.status(200).send(true);
     } catch (err) {
-        res.status(404).send({
-            error: err.message
-        });
+        res.status(404).send(false);
     }
 }
 
@@ -129,6 +131,7 @@ const loginPatient = async(req, res) => {
     const { email, motDePasse } = req.body;
 
     if (!email || !motDePasse) {
+        console.log(req.body)
         res.status(400).send({ success: false, error: "Please provide and email and password" })
     }
     // check for admin
@@ -138,15 +141,16 @@ const loginPatient = async(req, res) => {
             res.status(401).send({ success: false, error: "Invalid credentials" })
         } else {
 
-            const motdepasseCorrect = await bcrypt.compare(motDePasse, patient.mot_de_passe);
+            const motdepasseCorrect = await bcrypt.compare(motDePasse, patient.motDePasse);
 
             if (!motdepasseCorrect) {
                 res.status(401).send({ success: false, error: "Invalid credentials" })
 
             } else {
                 //const token = jwt.sign({ id: locataire.idLocataire, role: "locataire" }, process.env.JWT_SECRET);
-                res.send({ success: true, id: patient.id }); //, token: token });
+                //.send({ success: true, id: patient.id }); //, token: token });
                 //console.log("locataires connection established!")
+                res.send(patient)
 
             }
         }

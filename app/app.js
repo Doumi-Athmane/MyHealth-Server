@@ -34,11 +34,11 @@ app.use('/api/specialites', specialiteRoutes);
 app.use('/api/medecins', medecinRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/admins', adminRoutes);
-app.use('/api/prochePatient', procheRoutes);
+app.use('/api/prochesPatient', procheRoutes);
 app.use('/api/conseils', conseilRoutes);
 app.use('/api/frequanceCardique', frequenceCardiaqueRoutes);
 app.use('/api/tensonArterielle', tensionArterielleRoutes);
-app.use('/api/alerte', alerteRoutes);
+app.use('/api/alertes', alerteRoutes);
 app.use('/api/hopitalHasSpecialite', hopitalHasSpecialiteRoutes)
 app.use('/api/frequanceMakeAlerte', frequanceMakeAlerteRoutes);
 app.use('/api/tensionMakeAlerte', tensionMakeAlerteRoutes);
