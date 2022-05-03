@@ -12,7 +12,7 @@ export default function(sequelize, Sequelize) {
         prenom: {
             type: Sequelize.STRING(255)
         },
-        numero_de_telephone: {
+        numeroDeTelephone: {
             type: Sequelize.STRING(255)
         },
         adresse: {
@@ -21,7 +21,10 @@ export default function(sequelize, Sequelize) {
         email: {
             type: Sequelize.STRING(50)
         },
-        mot_de_passe: {
+        motDePasse: {
+            type: Sequelize.STRING(255)
+        },
+        relation: {
             type: Sequelize.STRING(255)
         },
         id_patient: {

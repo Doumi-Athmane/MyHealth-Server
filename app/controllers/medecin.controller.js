@@ -1,5 +1,6 @@
 import db from '../models/index.js'
 const Medecin = db.medecin;
+const Specialite = db.specialite;
 import bcrypt from 'bcrypt'
 
 // Find all medecins
@@ -153,11 +154,49 @@ const loginMedecin = async(req, res) => {
     }
 }
 
+const getMedecinSpec = async(req, res) => {
+    let medecinSpec = {
+        id: 0,
+        nom: "",
+        prenom: "",
+        numeroDeTelephone: "",
+        specialite: ""
+    }
+    try {
+        const medecin = await Medecin.findOne({
+            where: {
+                id: req.params.id,
+            },
+        });
+        if (medecin) {
+
+            medecinSpec.id = medecin.id
+            medecinSpec.nom = medecin.nom
+            medecinSpec.prenom = medecin.prenom
+            medecinSpec.numeroDeTelephone = medecin.numero_de_telephone
+            const specialite = await Specialite.findOne({
+                where: {
+                    idspecialite: medecin.idspecialite,
+                },
+            });
+            if (specialite) {
+                medecinSpec.specialite = specialite.nomspecialite
+            }
+        }
+        res.status(200).send(medecinSpec);
+    } catch (err) {
+        res.status(404).send({
+            error: err.message
+        });
+    }
+}
+
 export default {
     getAllMedecins,
     getMedecinByID,
     creatMedecin,
     updateMedecin,
     deleteMedecin,
-    loginMedecin
+    loginMedecin,
+    getMedecinSpec
 }

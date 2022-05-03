@@ -70,15 +70,19 @@ const getAlerteByID = async(req, res) => {
 //Create alerte
 const creatAlerte = async(req, res) => {
 
-        if (!req.body.titre || !req.body.message || !req.body.temps || !req.body.id_patient || !req.body.id_medecin) {
+        if (!req.body.titre || !req.body.message || !req.body.id_patient || !req.body.id_medecin) {
             res.status(400).send({
                 message: "parameters can't be empty!"
             })
             return;
         }
+        var d = new Date();
+        d = new Date(d.getTime() - 3000000);
+        var date_format_str = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString()) + " " + (d.getHours().toString().length == 2 ? d.getHours().toString() : "0" + d.getHours().toString()) + ":" + ((parseInt(d.getMinutes() / 5) * 5).toString().length == 2 ? (parseInt(d.getMinutes() / 5) * 5).toString() : "0" + (parseInt(d.getMinutes() / 5) * 5).toString());
+        console.log(date_format_str)
         const alerte = {
             titre: req.body.titre,
-            temps: req.body.temps,
+            //temps: date_format_str.toString(),
             message: req.body.message,
             id_patient: req.body.id_patient,
             id_medecin: req.body.id_medecin

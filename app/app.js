@@ -17,6 +17,7 @@ import hopitalHasSpecialiteRoutes from "./routes/hopitalHasSpecialite.route.js";
 import frequanceMakeAlerteRoutes from "./routes/frequanceMakeAlerte.route.js"
 import tensionMakeAlerteRoutes from "./routes/tensionArterielle.route.js"
 import alertForProcheRoutes from "./routes/alerteForProche.route.js"
+import messageRoutes from "./routes/message.route.js"
 
 const app = express();
 
@@ -43,6 +44,12 @@ app.use('/api/hopitalHasSpecialite', hopitalHasSpecialiteRoutes)
 app.use('/api/frequanceMakeAlerte', frequanceMakeAlerteRoutes);
 app.use('/api/tensionMakeAlerte', tensionMakeAlerteRoutes);
 app.use('/api/alertForProche', alertForProcheRoutes);
+app.use('/api/messages', messageRoutes);
+
+app.use((req, res) => {
+    res.send('<h1>Welcome to MyHealth REST API</h1>');
+});
+
 
 
 

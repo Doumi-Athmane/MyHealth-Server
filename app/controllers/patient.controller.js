@@ -1,5 +1,7 @@
 import db from '../models/index.js'
 const Patient = db.patient;
+const Medecin = db.medecin;
+
 import bcrypt from 'bcrypt'
 
 // Find all patients
@@ -105,6 +107,45 @@ const updatePatient = async(req, res) => {
     }
 }
 
+const updatePatientParams = async(req, res) => {
+    if (!req.body.email || !req.body.motDePasse) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+
+    const patient_1 = await Patient.findOne({ where: { email: req.body.email } })
+    if (!patient_1) {
+        res.status(401).send(false)
+    } else {
+
+        const motdepasseCorrect = await bcrypt.compare(req.body.motDePasse, patient_1.motDePasse);
+        if (motdepasseCorrect) {
+
+            const patient = {
+                motDePasse: req.body.motDePasseNew ? req.body.motDePasseNew : req.body.motDePasse
+            };
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(patient.motDePasse, salt);
+            patient.motDePasse = hash;
+            try {
+                const updatemedein = await Patient.update(
+                    patient, {
+                        where: {
+                            id: req.params.id,
+                        }
+                    }
+                )
+                res.status(200).send(true);
+            } catch (err) {
+                res.status(404).send(false);
+            }
+        } else res.status(401).send(false)
+    }
+
+}
+
 //delete patient
 const deletePatient = async(req, res) => {
     if (!req.params.id) {
@@ -157,11 +198,16 @@ const loginPatient = async(req, res) => {
     }
 }
 
+const getMedecinByPatient = async(req, res) => {
+
+}
+
 export default {
     getAllPatients,
     getPatientByID,
     creatPatient,
     updatePatient,
     deletePatient,
-    loginPatient
+    loginPatient,
+    updatePatientParams
 }
