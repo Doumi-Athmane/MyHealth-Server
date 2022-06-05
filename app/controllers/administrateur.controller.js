@@ -1,6 +1,10 @@
 import db from '../models/index.js'
 const Admin = db.admin;
-import bcrypt from 'bcrypt'
+
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+
 
 // Find all admins
 const getAllAdmins = async(req, res) => {
@@ -139,13 +143,16 @@ const loginAdmin = async(req, res) => {
         } else {
 
             const motdepasseCorrect = await bcrypt.compare(motDePasse, admin.mot_de_passe);
+            console.log(motdepasseCorrect);
+
             if (!motdepasseCorrect) {
-                res.status(401).send({ success: false, error: "Invalid credentials" })
+                res.status(401).send({ accessToken: null, error: "Invalid credentials" })
 
             } else {
-                //const token = jwt.sign({ id: locataire.idLocataire, role: "locataire" }, process.env.JWT_SECRET);
-                res.send({ success: true, id: admin.id }); //, token: token });
-                //console.log("locataires connection established!")
+                var token = jwt.sign({ id: admin.id }, 'secret');
+                return res.status(200).send({ id: admin.id, email: admin.email, accessToken: token, role: 'admin' });
+                //no res.send({ success: true, id: admin.id , accessToken: token });
+                //console.log("locataires connection established!") 
 
             }
         }

@@ -25,10 +25,10 @@ export default function(sequelize, Sequelize) {
             type: Sequelize.STRING(255)
         },
         idspecialite: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING(255)
         },
         idhopital: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING(255)
 
         },
 

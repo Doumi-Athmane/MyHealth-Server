@@ -8,7 +8,18 @@ import { Op } from 'sequelize';
 
 const secretFirebase = "AAAAgn1mtyw:APA91bGIglw-JKE9Z2b3OUT6aIBVNjKPbVEww26832v5jufTGPJJTWKZlZt3xOMVAW_PfEmheoMZFvKPRFUZsr7yl66hHyJ0LMOHPTRu6ivia6vfd7unHglTgRTXVvmVLjKni8JC7uhu"
 
-// Find all alerte by ID_Patient
+// Find all alertes
+const getAllAlertes = async(req, res) => {
+        try {
+            const alerte = await Alerte.findAll();
+            res.status(200).send(alerte);
+        } catch (err) {
+            res.status(404).send({
+                error: err.message
+            });
+        }
+    }
+    // Find all alerte by ID_Patient
 const getAllAlerteByIDPatient = async(req, res) => {
     if (!req.params.id_patient) {
         res.status(400).send({
@@ -195,10 +206,12 @@ const deleteAlerte = async(req, res) => {
 }
 
 export default {
+    getAllAlertes,
     getAlerteByID,
     getAllAlerteByIDMedecin,
     getAllAlerteByIDPatient,
     creatAlerte,
     deleteAlerte,
     getLastAlerteByIDPatient
+
 }

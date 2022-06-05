@@ -2,6 +2,7 @@ import db from '../models/index.js'
 const Medecin = db.medecin;
 const Specialite = db.specialite;
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
 
 // Find all medecins
 const getAllMedecins = async(req, res) => {
@@ -40,10 +41,10 @@ const getMedecinByID = async(req, res) => {
 //Create medecin
 const creatMedecin = async(req, res) => {
 
-    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.adresse || !req.body.email || !req.body.motDePasse) {
+    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.email) {
         res.status(400).send({
             message: "parameters can't be empty!"
-        })
+        });
         return;
     }
     const medecin = {
@@ -56,17 +57,16 @@ const creatMedecin = async(req, res) => {
         idspecialite: req.body.idspecialite,
         idhopital: req.body.idhopital,
     };
+    //save in bdd
+
     //hasher le mot de passe
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(medecin.mot_de_passe, salt);
     medecin.mot_de_passe = hash;
     try {
-        console.log(medecin)
-
         const data = await Medecin.create(medecin);
         res.status(200).send({ id: data.id });
     } catch (err) {
-        console.log(err)
         res.status(404).send({
             error: err.message
         });
@@ -75,7 +75,7 @@ const creatMedecin = async(req, res) => {
 
 //Update medecin infos
 const updateMedecin = async(req, res) => {
-    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.adresse || !req.body.email || !req.body.motDePasse) {
+    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.email) {
         res.status(400).send({
             message: "parameters can't be empty!"
         })
@@ -92,7 +92,7 @@ const updateMedecin = async(req, res) => {
         idhopital: req.body.idhopital,
     };
     try {
-        const updatemedein = await Medecin.update(
+        const updatemedecin = await Medecin.update(
             medecin, {
                 where: {
                     id: req.params.id,
@@ -148,8 +148,8 @@ const loginMedecin = async(req, res) => {
                 res.status(401).send({ success: false, error: "Invalid credentials" })
 
             } else {
-                //const token = jwt.sign({ id: locataire.idLocataire, role: "locataire" }, process.env.JWT_SECRET);
-                res.send({ success: true, id: medecin.id }); //, token: token });
+                var token = jwt.sign({ id: medecin.id }, 'secret');
+                return res.status(200).send({ id: medecin.id, email: medecin.email, accessToken: token, role: 'medecin' });
                 //console.log("locataires connection established!")
 
             }

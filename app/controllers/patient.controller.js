@@ -254,6 +254,26 @@ const loginPatient = async(req, res) => {
         }
     }
 }
+const getAllPatientByIDMedecin = async(req, res) => {
+    if (!req.params.id_medecin) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+    try {
+        const patient = await Patient.findAll({
+            where: {
+                id_medecin: req.params.id_medecin,
+            },
+        });
+        res.status(200).send(patient);
+    } catch (err) {
+        res.status(404).send({
+            error: err.message
+        });
+    }
+}
 
 const getMedecinByPatient = async(req, res) => {
 
@@ -267,5 +287,7 @@ export default {
     deletePatient,
     loginPatient,
     updatePatientParams,
-    getPatientMedByID
+    getPatientMedByID,
+    getAllPatientByIDMedecin,
+    updatePatientParams
 }
