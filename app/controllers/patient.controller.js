@@ -38,6 +38,63 @@ const getPatientByID = async(req, res) => {
     }
 }
 
+const getPatientMedByID = async(req, res) => {
+    let ptientMed = {
+        id: 0,
+        nom: "",
+        prenom: "",
+        age: 0,
+        sexe: "",
+        adresse: "",
+        numeroDeTelephone: "",
+        email: "",
+        id_medecin: "",
+        idhopital: 0,
+        nom_medecin: "",
+        prenom_medecin: ""
+    }
+    if (!req.params.id) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+    try {
+        const patient = await Patient.findOne({
+            where: {
+                id: req.params.id,
+            },
+        });
+        if (patient) {
+            ptientMed.id = patient.id
+            ptientMed.nom = patient.nom
+            ptientMed.prenom = patient.prenom
+            ptientMed.age = patient.age
+            ptientMed.sexe = patient.sexe
+            ptientMed.adresse = patient.adresse
+            ptientMed.numeroDeTelephone = patient.numeroDeTelephone
+            ptientMed.email = patient.email
+            ptientMed.id_medecin = patient.id_medecin
+            ptientMed.idhopital = patient.idhopital
+
+            const medecin = await Medecin.findOne({
+                where: {
+                    id: patient.id_medecin,
+                },
+            });
+            if (medecin) {
+                ptientMed.nom_medecin = medecin.nom
+                ptientMed.prenom_medecin = medecin.prenom
+            }
+        }
+        res.status(200).send(ptientMed);
+    } catch (err) {
+        res.status(404).send({
+            error: err.message
+        });
+    }
+}
+
 //Create patient
 const creatPatient = async(req, res) => {
 
@@ -209,5 +266,6 @@ export default {
     updatePatient,
     deletePatient,
     loginPatient,
-    updatePatientParams
+    updatePatientParams,
+    getPatientMedByID
 }

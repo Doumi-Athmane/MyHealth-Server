@@ -139,7 +139,6 @@ const loginAdmin = async(req, res) => {
         } else {
 
             const motdepasseCorrect = await bcrypt.compare(motDePasse, admin.mot_de_passe);
-
             if (!motdepasseCorrect) {
                 res.status(401).send({ success: false, error: "Invalid credentials" })
 

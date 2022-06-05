@@ -29,6 +29,13 @@ db.sequelize.sync();
 
 app.use(bodyParser.json());
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-with, Content-Type, Accept")
+    res.header("Access-Control-Allow-Methods", "*")
+    next()
+})
+
 app.use('/api/users', usersRoutes);
 app.use('/api/hopitals', hopitalRoutes);
 app.use('/api/specialites', specialiteRoutes);

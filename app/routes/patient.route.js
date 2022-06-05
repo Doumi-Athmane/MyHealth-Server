@@ -9,6 +9,7 @@ router.put('/update/:id', patient.updatePatient)
 router.delete('/:id', patient.deletePatient)
 router.post('/login', patient.loginPatient)
 router.put('/updateParams/:id', patient.updatePatientParams)
+router.get('/med/:id', patient.getPatientMedByID)
 
 
 export default router;

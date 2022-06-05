@@ -16,6 +16,9 @@ export default function(sequelize, Sequelize) {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW
         },
+        time: {
+            type: Sequelize.BIGINT
+        },
         id_patient: {
             type: Sequelize.INTEGER
         },

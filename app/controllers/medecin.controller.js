@@ -61,9 +61,12 @@ const creatMedecin = async(req, res) => {
     var hash = bcrypt.hashSync(medecin.mot_de_passe, salt);
     medecin.mot_de_passe = hash;
     try {
+        console.log(medecin)
+
         const data = await Medecin.create(medecin);
         res.status(200).send({ id: data.id });
     } catch (err) {
+        console.log(err)
         res.status(404).send({
             error: err.message
         });
