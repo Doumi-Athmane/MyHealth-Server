@@ -1,5 +1,7 @@
 import db from '../models/index.js'
 const Conseil = db.conseil;
+const Medecin = db.medecin;
+
 
 // Find all Conseils
 const getAllConseils = async(req, res) => {
@@ -51,11 +53,9 @@ const creatConseil = async(req, res) => {
     };
     try {
         const data = await Conseil.create(conseil);
-        res.status(200).send({ id: data.id });
+        res.status(200).send(true);
     } catch (err) {
-        res.status(404).send({
-            error: err.message
-        });
+        res.status(404).send(false);
     }
 }
 
@@ -110,10 +110,58 @@ const deleteConseil = async(req, res) => {
     }
 }
 
+const getConseilMedecin = async(req, res) => {
+    let conseilMedecins = []
+    try {
+        const conseils = await Conseil.findAll({
+            where: {
+                id_patient: req.params.id,
+            },
+            /*include: [{
+                model: Medecin,
+                required: true,
+            }]*/
+
+        });
+        var conteur = 0
+        if (conseils) {
+            for (const conseil of conseils) {
+                let conseilMedecin = {
+                    id: 0,
+                    id_medecin: 0,
+                    nom: "",
+                    prenom: "",
+                    text: ""
+                }
+                const medecin = await Medecin.findOne({
+                    where: {
+                        id: 3,
+                    }
+                });
+                console.log(medecin.nom)
+                conseilMedecin.id = conseil.id
+                conseilMedecin.id_medecin = conseil.id_medecin
+                conseilMedecin.nom = medecin.nom
+                conseilMedecin.prenom = medecin.prenom
+                conseilMedecin.text = conseil.text
+
+                conseilMedecins.push(conseilMedecin)
+                conteur++
+            };
+        }
+        res.status(200).send(conseilMedecins);
+    } catch (err) {
+        res.status(404).send({
+            error: err.message
+        });
+    }
+}
+
 export default {
     getAllConseils,
     getConseilByID,
     creatConseil,
     updateConseil,
-    deleteConseil
+    deleteConseil,
+    getConseilMedecin
 }

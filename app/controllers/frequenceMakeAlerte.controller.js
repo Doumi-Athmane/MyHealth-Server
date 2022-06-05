@@ -31,11 +31,7 @@ const getAlerteByFrequance = async(req, res) => {
         return;
     }
     try {
-        const frequanceMakeAlerte = await FrequanceMakeAlerte.findAll({
-            where: {
-                id_frequance: req.params.id_frequance,
-            },
-        });
+        const frequanceMakeAlerte = await FrequanceMakeAlerte.findAll();
         res.status(200).send(frequanceMakeAlerte);
     } catch (err) {
         res.status(404).send({

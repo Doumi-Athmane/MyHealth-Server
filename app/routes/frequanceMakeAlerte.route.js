@@ -2,8 +2,8 @@ import express from "express";
 const router = express.Router();
 import frequanceMakeAlerte from "../controllers/frequenceMakeAlerte.controller.js"
 
-router.get('/:id_frequance', frequanceMakeAlerte.getAlerteByFrequance)
-router.get('/:id_alerte', frequanceMakeAlerte.getAllfrequenceByAlerte)
+router.get('/freq/:id_frequance', frequanceMakeAlerte.getAlerteByFrequance)
+router.get('/alerte/:id_alerte', frequanceMakeAlerte.getAllfrequenceByAlerte)
 router.post('/add', frequanceMakeAlerte.creatFrequanceMakeAlerte)
 router.delete('/:id_frequance/:id_alerte', frequanceMakeAlerte.deleteFrequanceMakeAlerte)
 

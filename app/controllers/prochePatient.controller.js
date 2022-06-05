@@ -24,9 +24,31 @@ const getProchePatientByID = async(req, res) => {
         return;
     }
     try {
-        const prochePatient = await ProchePatient.findAll({
+        const prochePatient = await ProchePatient.findOne({
             where: {
                 id: req.params.id,
+            },
+        });
+        res.status(200).send(prochePatient);
+    } catch (err) {
+        res.status(404).send({
+            error: err.message
+        });
+    }
+}
+
+// Find proche by ID patient
+const getProchePatientByIdPatient = async(req, res) => {
+    if (!req.params.id) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+    try {
+        const prochePatient = await ProchePatient.findAll({
+            where: {
+                id_patient: req.params.id,
             },
         });
         res.status(200).send(prochePatient);
@@ -49,17 +71,18 @@ const creatProchePatient = async(req, res) => {
     const prochePatient = {
         nom: req.body.nom,
         prenom: req.body.prenom,
-        numero_de_telephone: req.body.numeroDeTelephone,
+        numeroDeTelephone: req.body.numeroDeTelephone,
         adresse: req.body.adresse,
         email: req.body.email,
-        mot_de_passe: req.body.motDePasse,
-        id_medecin: req.body.id_medecin,
+        motDePasse: req.body.motDePasse,
+        relation: req.body.relation,
+        id_patient: req.body.id_patient,
         idhopital: req.body.idhopital,
     };
     //hasher le mot de passe
     var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(prochePatient.mot_de_passe, salt);
-    prochePatient.mot_de_passe = hash;
+    var hash = bcrypt.hashSync(prochePatient.motDePasse, salt);
+    prochePatient.motDePasse = hash;
     try {
         const data = await ProchePatient.create(prochePatient);
         res.status(200).send({ id: data.id });
@@ -72,7 +95,7 @@ const creatProchePatient = async(req, res) => {
 
 //Update ProchePatient infos
 const updateProchePatient = async(req, res) => {
-    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.adresse || !req.body.email || !req.body.motDePasse) {
+    if (!req.body.nom || !req.body.prenom || !req.body.numeroDeTelephone || !req.body.adresse) {
         res.status(400).send({
             message: "parameters can't be empty!"
         })
@@ -81,12 +104,9 @@ const updateProchePatient = async(req, res) => {
     const prochePatient = {
         nom: req.body.nom,
         prenom: req.body.prenom,
-        numero_de_telephone: req.body.numeroDeTelephone,
+        numeroDeTelephone: req.body.numeroDeTelephone,
         adresse: req.body.adresse,
-        email: req.body.email,
-        mot_de_passe: req.body.motDePasse,
-        id_medecin: req.body.id_medecin,
-        idhopital: req.body.idhopital,
+        relation: req.body.relation
     };
     try {
         const updateprochePatient = await ProchePatient.update(
@@ -139,19 +159,58 @@ const loginProche = async(req, res) => {
             res.status(401).send({ success: false, error: "Invalid credentials" })
         } else {
 
-            const motdepasseCorrect = await bcrypt.compare(motDePasse, proche.mot_de_passe);
+            const motdepasseCorrect = await bcrypt.compare(motDePasse, proche.motDePasse);
 
             if (!motdepasseCorrect) {
                 res.status(401).send({ success: false, error: "Invalid credentials" })
 
             } else {
                 //const token = jwt.sign({ id: locataire.idLocataire, role: "locataire" }, process.env.JWT_SECRET);
-                res.send({ success: true, id: proche.id }); //, token: token });
+                res.send(proche); //, token: token });
                 //console.log("locataires connection established!")
 
             }
         }
     }
+}
+
+const updateProcheParams = async(req, res) => {
+    if (!req.body.email || !req.body.motDePasse) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+
+    const patient_1 = await ProchePatient.findOne({ where: { email: req.body.email } })
+    if (!patient_1) {
+        res.status(401).send(false)
+    } else {
+
+        const motdepasseCorrect = await bcrypt.compare(req.body.motDePasse, patient_1.motDePasse);
+        if (motdepasseCorrect) {
+
+            const proche = {
+                motDePasse: req.body.motDePasseNew ? req.body.motDePasseNew : req.body.motDePasse
+            };
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(proche.motDePasse, salt);
+            proche.motDePasse = hash;
+            try {
+                const updatemedein = await ProchePatient.update(
+                    proche, {
+                        where: {
+                            id: req.params.id,
+                        }
+                    }
+                )
+                res.status(200).send(true);
+            } catch (err) {
+                res.status(404).send(false);
+            }
+        } else res.status(401).send(false)
+    }
+
 }
 
 export default {
@@ -160,5 +219,7 @@ export default {
     creatProchePatient,
     updateProchePatient,
     deleteProchePatient,
-    loginProche
+    getProchePatientByIdPatient,
+    loginProche,
+    updateProcheParams
 }

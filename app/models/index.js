@@ -14,6 +14,7 @@ import hopitalHasSpecialite from './hopitalHasSpecialite.model.mjs';
 import frequanceMakeAlerte from './frequanceMakeAlerte.model.mjs';
 import tensionMakeAlerte from './tensionMakeAlerte.model.mjs';
 import alerteForProche from './alerteForProche.model.mjs';
+import message from './message.model.mjs'
 
 
 
@@ -58,6 +59,7 @@ db.hopitalHasSpecialite = hopitalHasSpecialite(sequelize, Sequelize)
 db.frequanceMakeAlerte = frequanceMakeAlerte(sequelize, Sequelize)
 db.tensionMakeAlerte = tensionMakeAlerte(sequelize, Sequelize)
 db.alerteForProche = alerteForProche(sequelize, Sequelize)
+db.message = message(sequelize, Sequelize)
 
 
 export default db;

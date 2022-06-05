@@ -7,5 +7,6 @@ router.get('/:id', conseil.getConseilByID)
 router.post('/add', conseil.creatConseil)
 router.put('/update/:id', conseil.updateConseil)
 router.delete('/:id', conseil.deleteConseil)
+router.get('/conseilMedecin/:id', conseil.getConseilMedecin)
 
 export default router;

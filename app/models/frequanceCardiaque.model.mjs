@@ -10,7 +10,8 @@ export default function(sequelize, Sequelize) {
             type: Sequelize.FLOAT
         },
         temps: {
-            type: Sequelize.DATE
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.NOW
         },
         traiter: {
             type: Sequelize.BOOLEAN,

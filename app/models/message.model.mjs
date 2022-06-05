@@ -1,23 +1,13 @@
 export default function(sequelize, Sequelize) {
 
-    const Alerte = sequelize.define("alerte", {
+    const Message = sequelize.define("message", {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        titre: {
+        text: {
             type: Sequelize.TEXT
-        },
-        message: {
-            type: Sequelize.TEXT
-        },
-        temps: {
-            type: Sequelize.DATE,
-            defaultValue: Sequelize.NOW
-        },
-        time: {
-            type: Sequelize.BIGINT
         },
         id_patient: {
             type: Sequelize.INTEGER
@@ -28,17 +18,17 @@ export default function(sequelize, Sequelize) {
 
     }, {
         freezeTableName: true,
-        tableName: 'alerte',
+        tableName: 'message',
         createdAt: false,
         updatedAt: false
     });
-    Alerte.associate = function(models) {
-        Alerte.belongsTo(models.patient, {
+    Message.associate = function(models) {
+        Message.belongsTo(models.patient, {
             foreignKey: 'id_patient',
         });
-        Alerte.belongsTo(models.medecin, {
+        Message.belongsTo(models.medecin, {
             foreignKey: 'id_medecin',
         });
     };
-    return Alerte
+    return Message
 };

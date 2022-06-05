@@ -1,5 +1,7 @@
 import db from '../models/index.js'
 const Patient = db.patient;
+const Medecin = db.medecin;
+
 import bcrypt from 'bcrypt'
 
 // Find all patients
@@ -29,6 +31,63 @@ const getPatientByID = async(req, res) => {
             },
         });
         res.status(200).send(patient);
+    } catch (err) {
+        res.status(404).send({
+            error: err.message
+        });
+    }
+}
+
+const getPatientMedByID = async(req, res) => {
+    let ptientMed = {
+        id: 0,
+        nom: "",
+        prenom: "",
+        age: 0,
+        sexe: "",
+        adresse: "",
+        numeroDeTelephone: "",
+        email: "",
+        id_medecin: "",
+        idhopital: 0,
+        nom_medecin: "",
+        prenom_medecin: ""
+    }
+    if (!req.params.id) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+    try {
+        const patient = await Patient.findOne({
+            where: {
+                id: req.params.id,
+            },
+        });
+        if (patient) {
+            ptientMed.id = patient.id
+            ptientMed.nom = patient.nom
+            ptientMed.prenom = patient.prenom
+            ptientMed.age = patient.age
+            ptientMed.sexe = patient.sexe
+            ptientMed.adresse = patient.adresse
+            ptientMed.numeroDeTelephone = patient.numeroDeTelephone
+            ptientMed.email = patient.email
+            ptientMed.id_medecin = patient.id_medecin
+            ptientMed.idhopital = patient.idhopital
+
+            const medecin = await Medecin.findOne({
+                where: {
+                    id: patient.id_medecin,
+                },
+            });
+            if (medecin) {
+                ptientMed.nom_medecin = medecin.nom
+                ptientMed.prenom_medecin = medecin.prenom
+            }
+        }
+        res.status(200).send(ptientMed);
     } catch (err) {
         res.status(404).send({
             error: err.message
@@ -105,6 +164,45 @@ const updatePatient = async(req, res) => {
     }
 }
 
+const updatePatientParams = async(req, res) => {
+    if (!req.body.email || !req.body.motDePasse) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+
+    const patient_1 = await Patient.findOne({ where: { email: req.body.email } })
+    if (!patient_1) {
+        res.status(401).send(false)
+    } else {
+
+        const motdepasseCorrect = await bcrypt.compare(req.body.motDePasse, patient_1.motDePasse);
+        if (motdepasseCorrect) {
+
+            const patient = {
+                motDePasse: req.body.motDePasseNew ? req.body.motDePasseNew : req.body.motDePasse
+            };
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(patient.motDePasse, salt);
+            patient.motDePasse = hash;
+            try {
+                const updatemedein = await Patient.update(
+                    patient, {
+                        where: {
+                            id: req.params.id,
+                        }
+                    }
+                )
+                res.status(200).send(true);
+            } catch (err) {
+                res.status(404).send(false);
+            }
+        } else res.status(401).send(false)
+    }
+
+}
+
 //delete patient
 const deletePatient = async(req, res) => {
     if (!req.params.id) {
@@ -156,6 +254,30 @@ const loginPatient = async(req, res) => {
         }
     }
 }
+const getAllPatientByIDMedecin = async(req, res) => {
+    if (!req.params.id_medecin) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+    try {
+        const patient = await Patient.findAll({
+            where: {
+                id_medecin: req.params.id_medecin,
+            },
+        });
+        res.status(200).send(patient);
+    } catch (err) {
+        res.status(404).send({
+            error: err.message
+        });
+    }
+}
+
+const getMedecinByPatient = async(req, res) => {
+
+}
 
 export default {
     getAllPatients,
@@ -163,5 +285,9 @@ export default {
     creatPatient,
     updatePatient,
     deletePatient,
-    loginPatient
+    loginPatient,
+    updatePatientParams,
+    getPatientMedByID,
+    getAllPatientByIDMedecin,
+    updatePatientParams
 }
