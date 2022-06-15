@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
 import client from "../config.js";
@@ -35,6 +36,8 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Methods", "*")
     next()
 })
+
+app.use(cors({origin : 'http://localhost:4200'}))
 
 app.use('/api/users', usersRoutes);
 app.use('/api/hopitals', hopitalRoutes);

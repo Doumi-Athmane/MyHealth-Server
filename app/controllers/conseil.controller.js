@@ -135,7 +135,7 @@ const getConseilMedecin = async(req, res) => {
                 }
                 const medecin = await Medecin.findOne({
                     where: {
-                        id: 3,
+                        id: conseil.id_medecin,
                     }
                 });
                 console.log(medecin.nom)

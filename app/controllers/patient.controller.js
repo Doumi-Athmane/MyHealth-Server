@@ -107,10 +107,10 @@ const creatPatient = async(req, res) => {
     const patient = {
         nom: req.body.nom,
         prenom: req.body.prenom,
-        numero_de_telephone: req.body.numeroDeTelephone,
+        numeroDeTelephone: req.body.numeroDeTelephone,
         adresse: req.body.adresse,
         email: req.body.email,
-        mot_de_passe: req.body.motDePasse,
+        motDePasse: req.body.motDePasse,
         age: req.body.age,
         sexe: req.body.sexe,
         id_medecin: req.body.id_medecin,
@@ -118,8 +118,8 @@ const creatPatient = async(req, res) => {
     };
     //hasher le mot de passe
     var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(patient.mot_de_passe, salt);
-    patient.mot_de_passe = hash;
+    var hash = bcrypt.hashSync(patient.motDePasse, salt);
+    patient.motDePasse = hash;
     try {
         const data = await Patient.create(patient);
         res.status(200).send({ id: data.id });
