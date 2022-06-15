@@ -1,13 +1,51 @@
 import db from '../models/index.js'
 const ProchePatient = db.prochePatient;
+const Patient = db.patient;
 import bcrypt from 'bcrypt'
 import patientModel from '../models/patient.model.mjs';
+import validator from 'validator';
 
 // Find all ProchePatients
 const getAllProchePatient = async(req, res) => {
+    let AllProche = []
     try {
-        const prochePatient = await ProchePatient.findAll();
-        res.status(200).send(prochePatient);
+        const prochePatients = await ProchePatient.findAll();
+        for (const prochePatient of prochePatients) {
+            const patient = await Patient.findOne({
+                where: {
+                    id: prochePatient.id_patient,
+                },
+            });
+            let prochePAtient = {
+                id: 0,
+                nom: "",
+                prenom: "",
+                adresse: "",
+                numeroDeTelephone: "",
+                email: "",
+                relation: "",
+                id_patient: 0,
+                idhopital: 0,
+                nom_patient: "",
+                prenom_patient: ""
+            }
+            if (patient) {
+                prochePAtient.id = prochePatient.id
+                prochePAtient.nom = prochePatient.nom
+                prochePAtient.prenom = prochePatient.prenom
+                prochePAtient.adresse = prochePatient.adresse
+                prochePAtient.numeroDeTelephone = prochePatient.numeroDeTelephone
+                prochePAtient.email = prochePatient.email
+                prochePAtient.relation = prochePatient.relation
+                prochePAtient.id_patient = prochePatient.id_patient
+                prochePAtient.idhopital = prochePatient.idhopital
+                prochePAtient.nom_patient = patient.nom
+                prochePAtient.prenom_patient = patient.prenom
+
+                AllProche.push(prochePAtient)
+            }
+        };
+        res.status(200).send(AllProche);
     } catch (err) {
         res.status(404).send({
             error: err.message
@@ -66,6 +104,17 @@ const creatProchePatient = async(req, res) => {
         res.status(400).send({
             message: "parameters can't be empty!"
         })
+        return;
+    }
+    if (validator.isEmail(req.body.email) === false) {
+        res.status(500).send({
+            message: "L'email est non valide !"
+        });
+        return;
+    }
+    const proche_0 = await ProchePatient.findOne({ where: { email: req.body.email } })
+    if (proche_0) {
+        res.status(400).send({ message: "Email déja existé " })
         return;
     }
     const prochePatient = {
