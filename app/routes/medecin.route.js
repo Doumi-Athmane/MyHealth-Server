@@ -9,6 +9,8 @@ router.put('/update/:id', medecin.updateMedecin)
 router.delete('/:id', medecin.deleteMedecin)
 router.post('/login', medecin.loginMedecin)
 router.get('/medecinSpec/:id', medecin.getMedecinSpec)
+router.put('/updateParams/:id', medecin.updateMedecinParams)
+
 
 
 

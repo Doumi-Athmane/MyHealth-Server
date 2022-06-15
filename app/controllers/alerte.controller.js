@@ -1,6 +1,8 @@
 import FCM from 'fcm-node/lib/fcm.js';
 import db from '../models/index.js'
 const Alerte = db.alerte;
+const Patient = db.patient;
+const Medecin = db.medecin;
 const FrequanceMakeAlerte = db.frequanceMakeAlerte;
 
 import { Op } from 'sequelize';
@@ -10,9 +12,48 @@ const secretFirebase = "AAAAgn1mtyw:APA91bGIglw-JKE9Z2b3OUT6aIBVNjKPbVEww26832v5
 
 // Find all alertes
 const getAllAlertes = async(req, res) => {
+        let AllAlertes = []
         try {
-            const alerte = await Alerte.findAll();
-            res.status(200).send(alerte);
+            const alertes = await Alerte.findAll();
+            for (const alerte of alertes) {
+                const patient = await Patient.findOne({
+                    where: {
+                        id: alerte.id_patient,
+                    },
+                });
+                const medecin = await Medecin.findOne({
+                    where: {
+                        id: alerte.id_medecin,
+                    },
+                });
+                let alerteMedPat = {
+                    id: 0,
+                    titre: "",
+                    message: "",
+                    temps: "",
+                    id_patient: 0,
+                    id_medecin: 0,
+                    nom_patient: "",
+                    prenom_patient: "",
+                    nom_medecin: "",
+                    prenom_medecin: ""
+                }
+                if (patient && medecin) {
+                    alerteMedPat.id = alerte.id
+                    alerteMedPat.titre = alerte.titre
+                    alerteMedPat.message = alerte.message
+                    alerteMedPat.temps = alerte.temps
+                    alerteMedPat.id_medecin = alerte.id_medecin
+                    alerteMedPat.id_patient = alerte.id_patient
+                    alerteMedPat.nom_patient = patient.nom
+                    alerteMedPat.prenom_patient = patient.prenom
+                    alerteMedPat.nom_medecin = medecin.nom
+                    alerteMedPat.prenom_medecin = medecin.prenom
+
+                    AllAlertes.push(alerteMedPat)
+                }
+            };
+            res.status(200).send(AllAlertes);
         } catch (err) {
             res.status(404).send({
                 error: err.message
@@ -53,8 +94,8 @@ const getLastAlerteByIDPatient = async(req, res) => {
         message: "",
         id_patient: 0,
         id_medecin: 0,
+        temps: 0,
         time: 0
-
     }
     try {
 
@@ -62,15 +103,14 @@ const getLastAlerteByIDPatient = async(req, res) => {
             where: {
                 id_patient: req.params.id,
                 time: {
-                    [Op.lt]: Date.now() + 60000,
-                    [Op.gt]: Date.now() - 60000
+                    [Op.lt]: Date.now() + 10000, //60000,
+                    [Op.gt]: Date.now() - 10000 //60000
                 }
 
             },
         });
         if (alerte == null) {
             res.status(200).send(alert);
-
         } else {
             res.status(200).send(alerte);
         }

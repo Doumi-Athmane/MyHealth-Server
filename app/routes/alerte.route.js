@@ -10,3 +10,12 @@ router.delete('/:id', alerte.deleteAlerte)
 router.get('/time/:id', alerte.getLastAlerteByIDPatient)
 router.get('/',alerte.getAllAlertes)
 export default router;
+
+
+
+
+
+
+
+
+

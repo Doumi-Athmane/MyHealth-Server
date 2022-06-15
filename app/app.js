@@ -19,6 +19,7 @@ import frequanceMakeAlerteRoutes from "./routes/frequanceMakeAlerte.route.js"
 import tensionMakeAlerteRoutes from "./routes/tensionArterielle.route.js"
 import alertForProcheRoutes from "./routes/alerteForProche.route.js"
 import messageRoutes from "./routes/message.route.js"
+import cors from "cors"
 
 const app = express();
 
@@ -37,7 +38,10 @@ app.use(function(req, res, next) {
     next()
 })
 
-app.use(cors({origin : 'http://localhost:4200'}))
+
+app.use(cors({
+    origin: 'http://localhost:4200'
+}))
 
 app.use('/api/users', usersRoutes);
 app.use('/api/hopitals', hopitalRoutes);

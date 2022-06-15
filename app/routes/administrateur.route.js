@@ -8,5 +8,7 @@ router.post('/add', admin.creatAdmin)
 router.put('/update/:id', admin.updateAdmin)
 router.delete('/:id', admin.deleteAdmin)
 router.post('/login', admin.loginAdmin)
+router.put('/updateParams/:id', admin.updateAdminParams)
+
 
 export default router;

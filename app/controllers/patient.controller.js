@@ -1,14 +1,53 @@
 import db from '../models/index.js'
+import validator from 'validator';
 const Patient = db.patient;
 const Medecin = db.medecin;
+
 
 import bcrypt from 'bcrypt'
 
 // Find all patients
 const getAllPatients = async(req, res) => {
+    let AllptientMed = []
     try {
         const patient = await Patient.findAll();
-        res.status(200).send(patient);
+        for (const patientt of patient) {
+            const medecin = await Medecin.findOne({
+                where: {
+                    id: patientt.id_medecin,
+                },
+            });
+            let ptientMed = {
+                id: 0,
+                nom: "",
+                prenom: "",
+                age: 0,
+                sexe: "",
+                adresse: "",
+                numeroDeTelephone: "",
+                email: "",
+                id_medecin: "",
+                idhopital: 0,
+                nom_medecin: "",
+                prenom_medecin: ""
+            }
+            if (medecin) {
+                ptientMed.id = patientt.id
+                ptientMed.nom = patientt.nom
+                ptientMed.prenom = patientt.prenom
+                ptientMed.age = patientt.age
+                ptientMed.sexe = patientt.sexe
+                ptientMed.adresse = patientt.adresse
+                ptientMed.numeroDeTelephone = patientt.numeroDeTelephone
+                ptientMed.email = patientt.email
+                ptientMed.id_medecin = patientt.id_medecin
+                ptientMed.idhopital = patientt.idhopital
+                ptientMed.nom_medecin = medecin.nom
+                ptientMed.prenom_medecin = medecin.prenom
+                AllptientMed.push(ptientMed)
+            }
+        };
+        res.status(200).send(AllptientMed);
     } catch (err) {
         res.status(404).send({
             error: err.message
@@ -102,6 +141,17 @@ const creatPatient = async(req, res) => {
         res.status(400).send({
             message: "parameters can't be empty!"
         })
+        return;
+    }
+    if (validator.isEmail(req.body.email) === false) {
+        res.status(500).send({
+            message: "L'email est non valide !"
+        });
+        return;
+    }
+    const patient_0 = await Patient.findOne({ where: { email: req.body.email } })
+    if (patient_0) {
+        res.status(400).send({ message: "Email déja existé " })
         return;
     }
     const patient = {
@@ -229,7 +279,6 @@ const loginPatient = async(req, res) => {
     const { email, motDePasse } = req.body;
 
     if (!email || !motDePasse) {
-        console.log(req.body)
         res.status(400).send({ success: false, error: "Please provide and email and password" })
     }
     // check for admin

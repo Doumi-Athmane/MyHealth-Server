@@ -3,12 +3,45 @@ const Medecin = db.medecin;
 const Specialite = db.specialite;
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
+import validator from 'validator';
 
 // Find all medecins
 const getAllMedecins = async(req, res) => {
+    let AllMedecin = []
     try {
         const medecins = await Medecin.findAll();
-        res.status(200).send(medecins);
+        for (const medecin of medecins) {
+            const specialite = await Specialite.findOne({
+                where: {
+                    idspecialite: medecin.idspecialite,
+                },
+            });
+            let medecinSpec = {
+                id: 0,
+                nom: "",
+                prenom: "",
+                adresse: "",
+                numeroDeTelephone: "",
+                email: "",
+                idspecialite: 0,
+                idhopital: 0,
+                specialite: "",
+            }
+            if (specialite) {
+                medecinSpec.id = medecin.id
+                medecinSpec.nom = medecin.nom
+                medecinSpec.prenom = medecin.prenom
+                medecinSpec.adresse = medecin.adresse
+                medecinSpec.numeroDeTelephone = medecin.numeroDeTelephone
+                medecinSpec.email = medecin.email
+                medecinSpec.idspecialite = medecin.idspecialite
+                medecinSpec.idhopital = medecin.idhopital
+                medecinSpec.specialite = specialite.nomspecialite
+
+                AllMedecin.push(medecinSpec)
+            }
+        };
+        res.status(200).send(AllMedecin);
     } catch (err) {
         res.status(404).send({
             error: err.message
@@ -45,6 +78,17 @@ const creatMedecin = async(req, res) => {
         res.status(400).send({
             message: "parameters can't be empty!"
         });
+        return;
+    }
+    if (validator.isEmail(req.body.email) === false) {
+        res.status(500).send({
+            message: "L'email est non valide !"
+        });
+        return;
+    }
+    const medecin_0 = await Medecin.findOne({ where: { email: req.body.email } })
+    if (medecin_0) {
+        res.status(400).send({ message: "Email déja existé " })
         return;
     }
     const medecin = {
@@ -194,6 +238,45 @@ const getMedecinSpec = async(req, res) => {
     }
 }
 
+const updateMedecinParams = async(req, res) => {
+    if (!req.body.email || !req.body.motDePasse) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+
+    const patient_1 = await Medecin.findOne({ where: { email: req.body.email } })
+    if (!patient_1) {
+        res.status(401).send(false)
+    } else {
+
+        const motdepasseCorrect = await bcrypt.compare(req.body.motDePasse, patient_1.mot_de_passe);
+        if (motdepasseCorrect) {
+
+            const patient = {
+                motDePasse: req.body.motDePasseNew ? req.body.motDePasseNew : req.body.motDePasse
+            };
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(patient.motDePasse, salt);
+            patient.motDePasse = hash;
+            try {
+                const updatemedein = await Medecin.update(
+                    patient, {
+                        where: {
+                            id: req.params.id,
+                        }
+                    }
+                )
+                res.status(200).send(true);
+            } catch (err) {
+                res.status(404).send(false);
+            }
+        } else res.status(401).send(false)
+    }
+
+}
+
 export default {
     getAllMedecins,
     getMedecinByID,
@@ -201,5 +284,6 @@ export default {
     updateMedecin,
     deleteMedecin,
     loginMedecin,
-    getMedecinSpec
+    getMedecinSpec,
+    updateMedecinParams
 }

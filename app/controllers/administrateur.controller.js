@@ -3,6 +3,7 @@ const Admin = db.admin;
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import validator from 'validator';
 
 
 
@@ -47,6 +48,17 @@ const creatAdmin = async(req, res) => {
         res.status(400).send({
             message: "parameters can't be empty!"
         })
+        return;
+    }
+    if (validator.isEmail(req.body.email) === false) {
+        res.status(500).send({
+            message: "L'email est non valide !"
+        });
+        return;
+    }
+    const admin_0 = await Admin.findOne({ where: { email: req.body.email } })
+    if (admin_0) {
+        res.status(400).send({ message: "Email déja existé " })
         return;
     }
 
@@ -159,11 +171,51 @@ const loginAdmin = async(req, res) => {
     }
 }
 
+const updateAdminParams = async(req, res) => {
+    if (!req.body.email || !req.body.motDePasse) {
+        res.status(400).send({
+            message: "parameters can't be empty!"
+        })
+        return;
+    }
+
+    const patient_1 = await Admin.findOne({ where: { email: req.body.email } })
+    if (!patient_1) {
+        res.status(401).send(false)
+    } else {
+
+        const motdepasseCorrect = await bcrypt.compare(req.body.motDePasse, patient_1.mot_de_passe);
+        if (motdepasseCorrect) {
+
+            const patient = {
+                motDePasse: req.body.motDePasseNew ? req.body.motDePasseNew : req.body.motDePasse
+            };
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(patient.motDePasse, salt);
+            patient.motDePasse = hash;
+            try {
+                const updatemedein = await Admin.update(
+                    patient, {
+                        where: {
+                            id: req.params.id,
+                        }
+                    }
+                )
+                res.status(200).send(true);
+            } catch (err) {
+                res.status(404).send(false);
+            }
+        } else res.status(401).send(false)
+    }
+
+}
+
 export default {
     getAllAdmins,
     getAdminByID,
     creatAdmin,
     updateAdmin,
     deleteAdmin,
-    loginAdmin
+    loginAdmin,
+    updateAdminParams
 }

@@ -51,5 +51,6 @@ export default function(sequelize, Sequelize) {
             foreignKey: 'idhopital',
         });
     };
+
     return Patient
 };
